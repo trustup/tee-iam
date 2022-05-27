@@ -1,0 +1,132 @@
+
+FROM ubuntu:20.04
+
+ENV ENV_SGX_MODE=HW
+
+#Mutual exclusive. Only one of the three SGX build is supported at time
+ENV ENV_DEBUG=0
+ENV ENV_PRERELEASE=1
+ENV ENV_RELEASE=0 
+
+ENV OPENSSL="1.1.1i"
+ENV SGXSSL="2.13_1.1.1i"
+ENV SDK_V="2.13"
+ENV WOLFSSL_V="4.8.0"
+
+ENV BOOST_VERSION="1.74.0"
+ENV BOOST_VERSION_="1_74_0"
+
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+
+# # Install dependencies
+RUN apt-get update && apt-get install  -y \
+    autoconf \
+    automake \
+    build-essential \
+    cmake \
+    curl \
+    debhelper \
+    git \
+    libcurl4-openssl-dev \
+    libprotobuf-dev \
+    libssl-dev \
+    libtool \
+    lsb-release \
+    ocaml \
+    ocamlbuild \
+    protobuf-compiler \
+    python \
+    wget \
+    clang \
+    make \
+    zip
+
+RUN apt remove -y --purge cmake && hash -r && \
+     wget https://github.com/Kitware/CMake/releases/download/v3.16.5/cmake-3.16.5.tar.gz && \
+     tar -zxvf cmake-3.16.5.tar.gz && \
+     cd cmake-3.16.5 && \
+     ./bootstrap && \
+     make && \
+     make install 
+     
+# # Install the SGX-SDK
+RUN git clone https://github.com/intel/linux-sgx.git && \
+    cd linux-sgx  && git checkout tags/sgx_"${SDK_V}" && \
+    make preparation && \
+    cp external/toolset/ubuntu18.04/* /usr/local/bin && which as ld ld.gold objdump && \
+    make sdk DEBUG="${ENV_DEBUG}" DESTDIR=/opt/intel/ && \
+    make sdk_install_pkg DEBUG="${ENV_DEBUG}" 
+
+WORKDIR /opt/intel
+RUN echo yes | /linux-sgx/linux/installer/bin/sgx_linux_x64_sdk_*.bin
+RUN /bin/bash -c "source /opt/intel/sgxsdk/environment" \
+    && echo 'source /opt/intel/sgxsdk/environment' >> /root/.bashrc
+
+# # Install the SGX-PSW
+WORKDIR /
+RUN cd linux-sgx && make psw && make psw_install_pkg \
+    && mkdir /etc/init && ./linux/installer/bin/sgx_linux_x64_psw_*.bin
+WORKDIR /opt/intel/sgxpsw/aesm
+ENV LD_LIBRARY_PATH=.
+RUN ./aesm_service 
+
+WORKDIR /
+
+RUN apt-get install -y git build-essential nano cmake clang libssl-dev zip
+RUN apt-get install -y libcurl4-openssl-dev libssl-dev zlib1g-dev 
+
+
+# # Install SGX SSL
+RUN wget https://github.com/intel/intel-sgx-ssl/archive/lin_"${SGXSSL}".zip && unzip lin_"${SGXSSL}".zip -d . \
+  && cd intel-sgx-ssl-lin_"${SGXSSL}"/openssl_source \
+  && wget https://www.openssl.org/source/old/1.1.1/openssl-"${OPENSSL}".tar.gz \
+  && cd ../Linux \
+  && make DEBUG="${ENV_DEBUG}" SGX_MODE="${ENV_SGX_MODE}" all && make DEBUG="${ENV_DEBUG}" install 
+
+WORKDIR /opt
+RUN git clone https://github.com/wolfSSL/wolfssl.git \ 
+  && cd wolfssl && git checkout tags/v"${WOLFSSL_V}"-stable && cd .. \
+  && rm wolfssl/IDE/LINUX-SGX/build.sh \
+  && cd wolfssl && sed -i 's/    #define FP_MAX_BITS           4096/    #define FP_MAX_BITS           8192/g' wolfssl/wolfcrypt/tfm.h && ./autogen.sh \
+  && ./configure --enable-aeskeywrap --enable-ecc --enable-supportedcurves --enable-sni --enable-tlsx --enable-opensslextra \
+  && make && make install && ldconfig
+
+COPY build-wolfssl.sh /opt/wolfssl/IDE/LINUX-SGX/build.sh
+RUN cd /opt/wolfssl/IDE/LINUX-SGX && ./build.sh
+
+RUN wget https://boostorg.jfrog.io/artifactory/main/release/"${BOOST_VERSION}"/source/boost_"${BOOST_VERSION_}".tar.gz && \
+     tar -xvzf boost_"${BOOST_VERSION_}".tar.gz && \
+     cd boost_"${BOOST_VERSION_}" && ./bootstrap.sh && \
+     ./b2 --with-program_options --with-filesystem install && \
+     cd .. && rm boost_"${BOOST_VERSION_}".tar.gz
+
+
+
+RUN  git clone https://github.com/gabime/spdlog.git && \
+     cd spdlog && mkdir build && cd build && \
+     cmake .. && make -j && make install
+
+
+RUN  git clone https://github.com/jupp0r/prometheus-cpp.git && \
+     sed -i "s/exposer_request_latencies/cscore_exposer_request_latencies/" prometheus-cpp/pull/src/handler.cc && \
+     cd prometheus-cpp && git submodule init && git submodule update && mkdir _build && \
+     cd _build && cmake .. -DBUILD_SHARED_LIBS=ON && make -j 4 && ctest -V && mkdir -p deploy && \
+     make install
+
+RUN apt install -y gdb
+
+
+WORKDIR /
+# # # Do some cleaning 
+RUN rm lin_"${SGXSSL}".zip \
+    && rm -rf linux-sgx \
+    && rm -rf intel-sgx-ssl-lin_"${SGXSSL}" \
+    && rm -rf spdlog \
+    && rm -rf prometheus-cpp 
+
+WORKDIR /usr/src/app
+ 
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

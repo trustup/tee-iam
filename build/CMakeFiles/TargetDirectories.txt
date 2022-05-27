@@ -1,0 +1,7 @@
+/usr/src/app/build/CMakeFiles/edit_cache.dir
+/usr/src/app/build/CMakeFiles/test.dir
+/usr/src/app/build/CMakeFiles/kmsapp.dir
+/usr/src/app/build/CMakeFiles/enclave-sign.dir
+/usr/src/app/build/CMakeFiles/enclave.dir
+/usr/src/app/build/CMakeFiles/rebuild_cache.dir
+/usr/src/app/build/CMakeFiles/enclave-edlobj.dir

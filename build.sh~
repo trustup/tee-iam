@@ -1,0 +1,2 @@
+sudo docker build --squash -t xmargininc/kms_img ./ -f ./Dockerfile4compose 
+docker push xmargininc/kms_img

@@ -1,0 +1,19 @@
+version: '2.0'
+services:
+  kms:
+    image: xmargininc/kms_img:1.1.0
+    container_name: kms
+    restart: unless-stopped 
+    ports:
+      - 0.0.0.0:22244:11144
+      - 9888:9888
+      - 8866:8866
+    # devices:
+      # - "/dev/isgx:/dev/isgx"
+      # - "/dev/mei0:/dev/mei0"
+    volumes:
+      - ./data/keys:/SecureDBdata
+      - ./data/logs/:/data/kms/logs/
+    environment: 
+      - LD_LIBRARY_PATH=/usr/local/lib
+    command: bash -c "cd build && ./kmsapp"

@@ -1,0 +1,37 @@
+
+
+enclave {
+    
+
+    /* Import ECALL/OCALL from sub-directory EDLs.
+     *  [from]: specifies the location of EDL file. 
+     *  [import]: specifies the functions to import, 
+     *  [*]: implies to import all functions.
+     */
+      
+    from "sgx_tstdc.edl" import *;
+	from "sgx_tprotected_fs.edl" import *;
+    from "Wolfssl_Enclave.edl" import *;
+	include "time.h"
+
+    /* 
+     * ocall_print_string - invokes OCALL to display string buffer inside the enclave.
+     *  [in]: copy the string buffer to App outside.
+     *  [string]: specifies 'str' is a NULL terminated buffer.
+     */
+    trusted {
+        public void ecall_init_kms(int env);
+        public int  ecall_remove();
+        public int ecall_signin();
+        public int ecall_signout();
+        public int ecall_signup();
+        public void ecall_get_role([out, size=len] char * role, size_t len);
+    };
+    untrusted {
+        unsigned int ocall_ftell([in, string] const char *filename);
+		void ocall_fread([in, string] const char *filename, [out,size=size] char *buf, unsigned int size);
+		void ocall_fremove([in, string] const char *filename);
+        void ocall_print_string([in, string] const char *str);
+    };
+
+};
