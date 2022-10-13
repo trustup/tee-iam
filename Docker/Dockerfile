@@ -1,4 +1,4 @@
-FROM xmargininc/sgx-base-sim:latest
+FROM trustup/sgx-base:1.0.0
 
 ENV BOOST_VERSION="1.74.0"
 ENV BOOST_VERSION_="1_74_0"

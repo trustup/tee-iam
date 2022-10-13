@@ -61,12 +61,23 @@ string byte_2_str(const unsigned char* bytes, int size) {
 
 
 int ecall_signup(){
+    using json = nlohmann::json;  
+    try {
+        json jdoc=json::parse(json_message_rcvd);
+        if(!jdoc.contains("role") || !jdoc.contains("op") || !jdoc.contains("uuid") || !jdoc.contains("pwd") || !jdoc.contains("username"))
+            return -5;
+    }catch(...) {
+        xprintf("Error in parsing the user entry from the storage system");
+        return -5;
+    }
+
     return ks_ukeys.append(uuid, json_message_rcvd);
 }
 
 std::string role;
 
 int ecall_signin(){
+
     if(!ks_ukeys.exist(uuid)){
        return -1;
     }else{
@@ -75,6 +86,9 @@ int ecall_signin(){
             return -2;
         }else{
             role=ks_ukeys.getRole(uuid);
+            if(role=="badparsing")
+                return -5;
+
             SIGNED_USERS.push_back(uuid);
             return 2; 
         }

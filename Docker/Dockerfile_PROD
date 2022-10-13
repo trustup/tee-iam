@@ -1,4 +1,6 @@
-FROM incisive.azurecr.io/sgx-base:latest
+FROM trustup/sgx-base:1.0.0
+
+#FROM incisive.azurecr.io/sgx-base:latest
 
 ENV BOOST_VERSION="1.74.0"
 ENV BOOST_VERSION_="1_74_0"

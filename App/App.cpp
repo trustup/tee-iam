@@ -100,6 +100,9 @@ int main(int argc, char *argv[]) /* not using since just testing w/ wc_test */
         }else if(res_==-2){ 
             logger->error("SIGNUP Failed - User already existing");        
             res.set_content("{\"status\":\"failed\",\"reason\":\"user-already-existent\"}", "text/plain");
+        }else if(res_==-5){ 
+            logger->error("SIGNUP Failed - Some fields missing in the JSON request");        
+            res.set_content("{\"status\":\"failed\",\"reason\":\"missing-request-field\"}", "text/plain");
         }else{ 
             logger->error("SIGNUP Failed - Unknown");              
             res.set_content("{\"status\":\"failed\",\"reason\":\"invalid-keys\"}", "text/plain");
@@ -129,6 +132,9 @@ int main(int argc, char *argv[]) /* not using since just testing w/ wc_test */
         }else if(res_==-2){ 
             logger->error("SIGNIN Failed - User already signed in");        
             res.set_content("{\"status\":\"failed\",\"reason\":\"user-already-signedin\"}", "text/plain");
+        }else if(res_==-5){ 
+            logger->error("SIGNIN Failed - Some field missing in the JSON request");        
+            res.set_content("{\"status\":\"failed\",\"reason\":\"missing-request-field\"}", "text/plain");
         }else{ 
             logger->error("SIGNIN Failed - User not found");              
             res.set_content("{\"status\":\"failed\",\"reason\":\"user-not-found\"}", "text/plain");

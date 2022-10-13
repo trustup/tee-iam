@@ -1,7 +1,7 @@
 version: '2.0'
 services:
   kms:
-    image: xmargininc/kms_img:1.1.0
+    image: incisive.azurecr.io/iam_img:2.0.0
     container_name: kms
     restart: unless-stopped 
     ports:

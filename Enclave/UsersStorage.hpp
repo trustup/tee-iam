@@ -236,14 +236,20 @@ inline std::string UsersStorage::getAll(){
 
  
 inline std::string UsersStorage::getRole(std::string uuid){ 
+	std::string result="";
 	if(exist(uuid)){
 		auto entry=USERSENTRIES[uuid];
-		using json = nlohmann::json;   
-		json d=json::parse(entry);
-		return d["role"].get<std::string>();
-	}else{
-		return "";
+		using json = nlohmann::json;  
+		try {
+			json d=json::parse(entry);
+			result= d["role"].get<std::string>();
+		}catch(...) {
+			xprintf("Error in parsing the user entry from the storage system");
+			result="";
+		}
 	}
+
+	return result;
 
 }
 

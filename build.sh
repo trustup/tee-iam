@@ -7,6 +7,7 @@ then
     if [ -n "$version" ];
     then
         sudo docker build -t incisive.azurecr.io/iam_img:$version ./ -f ./Docker/Dockerfile_PROD
+        sudo docker build -t trustup/iam_img:$version ./ -f ./Docker/Dockerfile_PROD
     else
         echo "You must add the docker image version"
     fi;
@@ -16,6 +17,7 @@ then
     if [ -n "$version" ];
     then
         sudo docker build -t incisive.azurecr.io/iam_img:$version ./ -f ./Docker/Dockerfile_DEV
+        sudo docker build -t trustup/iam_img:$version ./ -f ./Docker/Dockerfile_DEV
     else
         echo "You must add the docker image version"
     fi;
