@@ -23,6 +23,7 @@ enclave {
         public void ecall_init_kms(int env);
         public int  ecall_remove();
         public int ecall_signin();
+        public int ecall_2fa();
         public int ecall_signout();
         public int ecall_signup();
         public void ecall_get_role([out, size=len] char * role, size_t len);
@@ -32,6 +33,7 @@ enclave {
 		void ocall_fread([in, string] const char *filename, [out,size=size] char *buf, unsigned int size);
 		void ocall_fremove([in, string] const char *filename);
         void ocall_print_string([in, string] const char *str);
+        void ocall_send_email([in, string] const char *email, [in, string] const char *code);
     };
 
 };
