@@ -26,7 +26,7 @@ UsersStorage ks_ukeys;
 CertKeyStorage ks_certs;
 std::string json_message_rcvd;
 std::string uuid;
-std::string received_code;
+int received_code;
 std::vector<std::string> SIGNED_USERS;
 std::map<std::string, std::string> ROLES;
 
@@ -87,11 +87,11 @@ ecall_signup()
 }
 
 std::string role;
-std::string authcode;
+int authcode_num;
 int
 ecall_signin()
 {
-
+    std::string authcode;
     if (!ks_ukeys.exist(uuid)) {
         return -1;
     }
@@ -115,6 +115,7 @@ ecall_signin()
                 r = r % 9;
                 authcode += legalChars[r];
             }
+            authcode_num=stoi(authcode);
             ocall_send_email(email.c_str(), authcode.c_str());
             return 2;
         }
@@ -124,7 +125,7 @@ ecall_signin()
 int
 ecall_2fa()
 {
-    if (received_code != authcode) {
+    if (received_code != authcode_num) {
         return -1;
     }
 

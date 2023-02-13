@@ -11,7 +11,7 @@
 
 extern std::string json_message_rcvd;
 extern std::string uuid;
-extern std::string received_code;
+extern int received_code;
 
 inline int
 handle_http_read(const char *jsonmsg)
@@ -27,7 +27,7 @@ handle_http_read(const char *jsonmsg)
         }
         if (document.contains("code")) {
             json_message_rcvd = jsonmsg;
-            received_code = document["code"].get<std::string>();
+            received_code = document["code"].get<int>();
         }
         return 1;
     } catch (...) {

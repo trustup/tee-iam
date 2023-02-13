@@ -23,6 +23,8 @@ RUN rm -rf spdlog
 RUN apt-get update && apt install -y libpoco-dev 
 
 
+RUN mkdir /SecureDBdata
+
 RUN  git clone https://github.com/jupp0r/prometheus-cpp.git && \
      sed -i "s/exposer_request_latencies/cscore_exposer_request_latencies/" prometheus-cpp/pull/src/handler.cc && \
      cd prometheus-cpp && git submodule init && git submodule update && mkdir _build && \

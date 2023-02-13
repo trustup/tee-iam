@@ -178,7 +178,7 @@ main(int argc, char *argv[]) /* not using since just testing w/ wc_test */
         res.set_header("Access-Control-Allow-Methods",
                        "OPTIONS, GET, POST, HEAD");
 
-        if (res_ == 2) {
+        if (res_ > 0) {
             logger->info("2FA OK");
             res.set_content("{\"status\":\"ok\"}", "text/plain");
         }

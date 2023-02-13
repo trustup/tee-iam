@@ -1,4 +1,4 @@
-FROM xmargininc/sgx-base-sim:latest
+FROM trustup/sgx-base:1.0.0
 
 ENV BOOST_VERSION="1.74.0"
 ENV BOOST_VERSION_="1_74_0"
@@ -10,6 +10,7 @@ ENV WOLFSSL_ROOT=/opt/wolfssl
 ENV SPDLOG_INCLUDE_PATH=/usr/src/app/spdlog/include
 ENV RAPIDJSON_ROOT=/usr/src/app/third_party/rapidjson
 ENV GMP_PATH=/opt/intel/sgxgmp
+ENV SGX_MODE=SIM
 
 
 

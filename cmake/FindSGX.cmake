@@ -48,7 +48,7 @@ if(SGX_FOUND)
     set(SGX_HW OFF CACHE BOOL "Run SGX on hardware, OFF for simulation.")
     set(SGX_BUILD_TYPE Debug CACHE STRING "SGX build mode: Debug; PreRelease; Release.")
 
-    if(SGX_HW)
+    if(SGX_HW EQUAL ON)
         set(SGX_URTS_LIB sgx_urts)
         set(SGX_USVC_LIB sgx_uae_service)
         set(SGX_TRTS_LIB sgx_trts)
