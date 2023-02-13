@@ -200,7 +200,7 @@ add_untrusted_executable(kmsapp SRCS ${U_SRCS} ${U_SRCS_Exchanges}
                     EXTRA_LIB_DIRS ${PROMETEUS_LIBRARY_DIRS} ${ZLIB_LIBRARIES_DIR}
                     EXTRA_OPTIONS_FLAGS ${WOLFSSL_APP_EXTRA_FLAGS}
                     EXTRA_LIBS spdlog::spdlog Boost::program_options Boost::filesystem
-                    ${PROMETEUS_LIBRARIES} ${ZLIB_LIBRARIES} -lsgx_uprotected_fs  -lstdc++fs -L/usr/lib/x86_64-linux-gnu -lPocoNet
+                    ${PROMETEUS_LIBRARIES} ${ZLIB_LIBRARIES} -lsgx_uprotected_fs  -lstdc++fs -L/usr/lib/x86_64-linux-gnu -lPocoNet -lPocoNetSSL
 )
 add_dependencies(kmsapp enclave-sign)
 

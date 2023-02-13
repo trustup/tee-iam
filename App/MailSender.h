@@ -1,0 +1,1 @@
+void send_email(const char *email, const char *code);
