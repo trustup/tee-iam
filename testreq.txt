@@ -1,0 +1,8 @@
+SIGNUP
+curl --insecure -v -d '{"uuid":"5f56eb1e-8df2-4769-9193-af0988394bbb","op": "signup","email":"mazzeo.gio@gmail.com","role":"researcher","username":"gmazzeo", "pwd":"superpippo"}' -H "Content-Type: application/json" -X POST https://127.0.0.1:8866/accesshandler/signup
+
+SIGNIN
+curl --insecure -v -d '{"uuid": "5f56eb1e-8df2-4769-9193-af0988394bbb",  "op": "signin", "username":"gmazzeo", "pwd":"superpippo"}' -H "Content-Type: application/json" -X POST https://127.0.0.1:8866/accesshandler/signin
+
+2FA
+curl --insecure -v -d '{"uuid": "5f56eb1e-8df2-4769-9193-af0988394bbb",  "op": "twofactor", "code":152176, "username":"gmazzeo"}' -H "Content-Type: application/json" -X POST https://127.0.0.1:8866/accesshandler/twofactor
