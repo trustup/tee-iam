@@ -20,6 +20,7 @@ RUN  git clone https://github.com/gabime/spdlog.git && \
 
 RUN rm -rf spdlog
 
+RUN apt-get update && apt install -y libpoco-dev 
 
 
 RUN  git clone https://github.com/jupp0r/prometheus-cpp.git && \
