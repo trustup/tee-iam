@@ -23,13 +23,6 @@ cd tee-iam
 ./build.sh
 ```
 
-## API Reference
-The TEE-IAM tool provides a RESTful API for managing users, roles, and permissions. The API can be accessed at https://localhost:8000/api (HTTPS with TEE certificate):
-
-POST /api/users: Create a new user
-GET /api/users/{username}: Retrieve user details
-POST /api/roles: Define a new role
-GET /api/logs: Retrieve audit logs
 
 ## Security
 The TEE-IAM tool takes advantage of TEE capabilities to ensure security and integrity:
